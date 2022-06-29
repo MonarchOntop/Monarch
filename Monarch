@@ -115,7 +115,7 @@ local ItemDropDown = LimitedSniper:AddDropdown({
         "Ice Crown",
         "Clockwork",
         "):",
-	    "valk"},
+	"Valk"},
 	
 	Callback = function(Value)
 		Item = Value
