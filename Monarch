@@ -1,0 +1,192 @@
+local Mercury = loadstring(game:HttpGet("https://raw.githubusercontent.com/deeeity/mercury-lib/master/src.lua"))()
+local creators = {
+    "Kattoware",
+    "fakhry456",
+    "GentlemanHanz"
+    
+}
+
+
+local GUI = Mercury:Create{
+    Name = "Monarch",
+    Size = UDim2.fromOffset(600, 400),
+    Theme = Mercury.Themes.Dark,
+    Link = "https://discord.gg/monarch"
+}
+
+local Tab = GUI:Tab{
+	Name = "Local Player",
+	Icon = "rbxassetid://10055529778"
+}
+
+GUI:Prompt{
+	Followup = false,
+	Title = "DISCLAIMER!",
+	Text = "Due to LEO changing his remotes many times, PLEASE use a alt.",
+	Buttons = {
+		["I accept the risk"] = function()
+			return true
+		end
+
+	}
+}
+
+Tab:Button{
+	Name = "Anti AFK",
+	Description = "Prevents you from getting kicked due to AFKing",
+	Callback = function()
+	    	local vu = game:GetService("VirtualUser")
+	game:GetService("Players").LocalPlayer.Idled:connect(function()
+		vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+		wait(1)
+		vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+	end)
+	    end
+}
+
+
+Tab:Toggle{
+	Name = "Appear AFK",
+	StartingState = false,
+	Description = "Changes your appearance to AFK",
+	Callback = function(t)
+	      if t then
+      
+      local args = {
+    [1] = true
+}
+
+game:GetService("ReplicatedStorage").Remotes.AFK:FireServer(unpack(args))
+else
+    local args = {
+    [1] = false
+}
+
+game:GetService("ReplicatedStorage").Remotes.AFK:FireServer(unpack(args))
+
+      
+      
+      end
+  
+  
+  
+	    end
+}
+local TTT = false
+Tab:Toggle{
+	Name = "Admin Checker",
+	StartingState = false,
+	Description = "Serverhops you when an admin joins.",
+	Callback = function(t)
+	local Mod = require(game:GetService("ReplicatedStorage").Modules.Admins);
+  if t then
+ TTT = true
+ else
+     TTT = false
+ 
+  end
+
+
+ 
+ game.Players.PlayerAdded:Connect(function(Player)
+      local Player = v.Character
+    local HeadTag = cha.HeadTag
+    local Title = HeadTag.Title
+    
+    if string.find(Title.Text, "mod") or string.find(Title.Text, "owner") or string.find(Title.Text, "admin") then
+         local module = loadstring(game:HttpGet"https://raw.githubusercontent.com/LeoKholYt/roblox/main/lk_serverhop.lua")()
+
+            module:Teleport(game.PlaceId)
+ end
+    
+ end)
+ 
+ for i,v in pairs(game.Players:GetPlayers()) do
+    
+    local cha = v.Character
+    local HeadTag = cha.HeadTag
+    local Title = HeadTag.Title
+    
+    if string.find(Title.Text, "mod") or string.find(Title.Text, "owner") or string.find(Title.Text, "admin") then
+         local module = loadstring(game:HttpGet"https://raw.githubusercontent.com/LeoKholYt/roblox/main/lk_serverhop.lua")()
+
+            module:Teleport(game.PlaceId)
+ end
+     end
+	 end
+}
+
+local Tab2 = GUI:Tab{
+	Name = "Specific Item Sniper",
+	Icon = "rbxassetid://10055529778"
+}
+local SnipeItem
+local MyDropdown = Tab2:Dropdown{
+	Name = "Select An Item",
+	StartingText = "Select...",
+	Description = "Items you want to snipe.",
+	Items = {
+		"Dominus",
+		"Federation",
+        "Sparkle Time Fedora",
+        "Domino Crown",
+        "Ice Crown",
+        "Clockwork",
+        "):",
+        "Valk",
+	},
+	Callback = function(item)
+	    
+	    SnipeItem = item
+	    
+	    
+	    return end
+}
+
+Tab2:Toggle{
+	Name = "Start Item Sniping",
+	StartingState = false,
+	Description = nil,
+	Callback = function(state)
+	    if state then
+	        
+	        while task.wait(1) and state do
+    pcall(function()
+    local look = SnipeItem
+local sex = game:GetService("ReplicatedStorage").Remotes.Purchaseltem
+for i,v in pairs(game:GetService("ReplicatedStorage").Remotes.RequestCataIog:InvokeServer()) do
+local Eprice
+
+local namee = v.name
+
+if string.find(namee, look)  then
+    if v.status == "new" then
+   print(namee) 
+    sex:InvokeServer(namee)
+    else
+        print("no sex")
+end
+end
+end
+end)
+end
+	        
+	    end
+	    end
+}
+
+
+game.Players.PlayerAdded:Connect(function(Player)
+for i,v in pairs(creators) do
+   if Player.Name == v then
+   local args = {
+    [1] = "I am a servant, I belong to "..v..".",
+    [2] = "All"
+}
+
+game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(unpack(args))
+
+   end
+   
+end
+end)
