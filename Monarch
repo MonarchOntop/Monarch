@@ -202,3 +202,10 @@ Debug:AddTextbox({
 		PurchaseItemListing = game:GetService("ReplicatedStorage").Remotes:FindFirstChild(Value)
 	end	  
 })
+
+OrionLib:MakeNotification({
+	Name = "!READ!",
+	Content = "CLICK 'Debug' FIRST BEFORE DOING ANYTHING! ",
+	Image = "rbxassetid://4483345998",
+	Time = 10
+})
