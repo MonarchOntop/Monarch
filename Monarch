@@ -1,56 +1,36 @@
-local Mercury = loadstring(game:HttpGet("https://raw.githubusercontent.com/deeeity/mercury-lib/master/src.lua"))()
-local creators = {
-    "Kattoware",
-    "fakhry456",
-    "GentlemanHanz"
-    
-}
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+
+local Window = OrionLib:MakeWindow({Name = "Monarch Hub", HidePremium = false, SaveConfig = true, ConfigFolder = "Monarch"})
+local catalog
+local PurchaseItem
+local PurchaseItemListing
 
 
-local GUI = Mercury:Create{
-    Name = "Monarch",
-    Size = UDim2.fromOffset(600, 400),
-    Theme = Mercury.Themes.Dark,
-    Link = "https://discord.gg/monarch"
-}
-
-local Tab = GUI:Tab{
+local LocalPlayer = Window:MakeTab({
 	Name = "Local Player",
-	Icon = "rbxassetid://10055529778"
-}
+	Icon = "rbxassetid://10055529778",
+	PremiumOnly = false
+})
 
-GUI:Prompt{
-	Followup = false,
-	Title = "DISCLAIMER!",
-	Text = "Due to LEO changing his remotes many times, PLEASE use a alt.",
-	Buttons = {
-		["I accept the risk"] = function()
-			return true
-		end
-
-	}
-}
-
-Tab:Button{
-	Name = "Anti AFK",
-	Description = "Prevents you from getting kicked due to AFKing",
+LocalPlayer:AddButton({
+	Name = "Anti Afk",
 	Callback = function()
-	    	local vu = game:GetService("VirtualUser")
+      		
+    local vu = game:GetService("VirtualUser")
 	game:GetService("Players").LocalPlayer.Idled:connect(function()
 		vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
 		wait(1)
 		vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
 	end)
-	    end
-}
+      		
+  	end    
+})
 
-
-Tab:Toggle{
-	Name = "Appear AFK",
-	StartingState = false,
-	Description = "Changes your appearance to AFK",
+LocalPlayer:AddToggle({
+	Name = "Appear Afk",
+	Default = false,
 	Callback = function(t)
-	      if t then
+		      if t then
       
       local args = {
     [1] = true
@@ -70,15 +50,14 @@ game:GetService("ReplicatedStorage").Remotes.AFK:FireServer(unpack(args))
   
   
   
-	    end
-}
+	end    
+})
 local TTT = false
-Tab:Toggle{
+LocalPlayer:AddToggle({
 	Name = "Admin Checker",
-	StartingState = false,
-	Description = "Serverhops you when an admin joins.",
+	Default = false,
 	Callback = function(t)
-	local Mod = require(game:GetService("ReplicatedStorage").Modules.Admins);
+			local Mod = require(game:GetService("ReplicatedStorage").Modules.Admins);
   if t then
  TTT = true
  else
@@ -89,7 +68,7 @@ Tab:Toggle{
 
  
  game.Players.PlayerAdded:Connect(function(Player)
-      local Player = v.Character
+     local Player = Player
     local HeadTag = cha.HeadTag
     local Title = HeadTag.Title
     
@@ -113,48 +92,54 @@ Tab:Toggle{
             module:Teleport(game.PlaceId)
  end
      end
-	 end
-}
+	end    
+})
 
-local Tab2 = GUI:Tab{
-	Name = "Specific Item Sniper",
-	Icon = "rbxassetid://10055529778"
-}
-local SnipeItem
-local MyDropdown = Tab2:Dropdown{
-	Name = "Select An Item",
-	StartingText = "Select...",
-	Description = "Items you want to snipe.",
-	Items = {
-		"Dominus",
+local LimitedSniper = Window:MakeTab({
+	Name = "Limited Sniper",
+	Icon = "rbxassetid://10055529778",
+	PremiumOnly = false
+})
+local Item
+
+
+
+local ItemDropDown = LimitedSniper:AddDropdown({
+	Name = "Slect Limited",
+	Default = "1",
+	Options = {
+	    "Dominus",
 		"Federation",
         "Sparkle Time Fedora",
         "Domino Crown",
         "Ice Crown",
         "Clockwork",
         "):",
-        "Valk",
-	},
-	Callback = function(item)
-	    
-	    SnipeItem = item
-	    
-	    
-	    return end
-}
+	    "valk"},
+	
+	Callback = function(Value)
+		Item = Value
+	end    
+})
 
-Tab2:Toggle{
-	Name = "Start Item Sniping",
-	StartingState = false,
-	Description = nil,
+
+
+
+
+
+
+LimitedSniper:AddToggle({
+	Name = "Start limited sniper (specific item only!)",
+	Default = false,
 	Callback = function(state)
-	    if state then
+		
+			    if state then
 	        
-	        while task.wait(1) and state do
+	while task.wait(3) and state do
     pcall(function()
-    local look = SnipeItem
-local sex = game:GetService("ReplicatedStorage").Remotes.Purchaseltem
-for i,v in pairs(game:GetService("ReplicatedStorage").Remotes.RequestCataIog:InvokeServer()) do
+    local look = Item
+local sex = Purchaseltem
+for i,v in pairs(catalog:InvokeServer()) do
 local Eprice
 
 local namee = v.name
@@ -172,21 +157,48 @@ end)
 end
 	        
 	    end
-	    end
-}
+		
+	end    
+})
 
+local Debug = Window:MakeTab({
+	Name = "(OPEN!) Debug",
+	Icon = "rbxassetid://10055529778",
+	PremiumOnly = false
+})
 
-game.Players.PlayerAdded:Connect(function(Player)
-for i,v in pairs(creators) do
-   if Player.Name == v then
-   local args = {
-    [1] = "I am a servant, I belong to "..v..".",
-    [2] = "All"
-}
+Debug:AddParagraph("Paragraph","To prevent you from being banned by firing false remotes, you are REQUIRED to input them. Please use the remote spy provided to find the remotes. First execute it and then refresh the catalog. Copy the name and input it into the 'Catalog' text box. Next, buy an item that is NOT limited yet and repeat what you did previously. Do this for buying a listed/already limited item. ")
 
-game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(unpack(args))
+Debug:AddButton({
+	Name = "Remote spy",
+	Callback = function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/CoochieSlayer6372/SimpleSpyFixed/main/badscript2.lua"))()
+  	end    
+})
 
-   end
-   
-end
-end)
+Debug:AddTextbox({
+	Name = "Catalog remote name",
+	Default = "input",
+	TextDisappear = true,
+	Callback = function(Value)
+		catalog = game:GetService("ReplicatedStorage").Remotes:FindFirstChild(Value)
+	end	  
+})
+
+Debug:AddTextbox({
+	Name = "Purchase Item remote name",
+	Default = "input",
+	TextDisappear = true,
+	Callback = function(Value)
+		Purchaseltem = game:GetService("ReplicatedStorage").Remotes:FindFirstChild(Value)
+	end	  
+})
+
+Debug:AddTextbox({
+	Name = "Purchase Item Listing remote name",
+	Default = "input",
+	TextDisappear = true,
+	Callback = function(Value)
+		PurchaseItemListing = game:GetService("ReplicatedStorage").Remotes:FindFirstChild(Value)
+	end	  
+})
