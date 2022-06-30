@@ -4,7 +4,7 @@ local Window = OrionLib:MakeWindow({Name = "Monarch Hub", HidePremium = false, S
 local catalog
 local PurchaseItem
 local PurchaseItemListing
-
+local RequestItemInfo
 
 local LocalPlayer = Window:MakeTab({
 	Name = "Local Player",
@@ -160,6 +160,59 @@ end
 		
 	end    
 })
+local Budget
+LimitedSniper:AddSlider({
+	Name = "Budget",
+	Min = 1,
+	Max = 500000,
+	Default = 1,
+	Color = Color3.fromRGB(255,255,255),
+	Increment = 1,
+	ValueName = "Budget",
+	Callback = function(Value)
+		Budget = Value
+	end    
+})
+local Discount
+LimitedSniper:AddSlider({
+	Name = "Discount",
+	Min = 1,
+	Max = 99,
+	Default = 1,
+	Color = Color3.fromRGB(255,255,255),
+	Increment = 1,
+	ValueName = "Discount",
+	Callback = function(Value)
+		Discount = Value
+	end    
+})
+
+LimitedSniper:AddToggle({
+	Name = "Start limited sniper (buys ALL limiteds that are discounted/under your budget)",
+	Default = false,
+	Callback = function(Value)
+		if Value then
+		    while task.tick(3) do
+		        local sex = PurchaseItemListing
+                for i,v in pairs(catalog:InvokeServer()) do
+                local Eprice = v.price
+                local RAP = v.RAP
+                local namee = v.name
+                
+                local aa = Eprice/RAP*100
+                
+                if aa <= Discount and Eprice <= budget and v.status ~= "new" then
+                    for i,v in pairs(RequestItemInfo:InvokeServer(v.name).listings[1]) do
+                    if i == "id" and v.Name <= budget then
+                    PurchaseItemListing:InvokeServer(v.Name, v)
+                    end
+                    end
+                    end
+            end
+		    end
+		    end
+	end    
+})
 
 local Debug = Window:MakeTab({
 	Name = "(OPEN!) Debug",
@@ -203,9 +256,19 @@ Debug:AddTextbox({
 	end	  
 })
 
+Debug:AddTextbox({
+	Name = "RequestItemInfo remote name",
+	Default = "input",
+	TextDisappear = true,
+	Callback = function(Value)
+		RequestItemInfo = game:GetService("ReplicatedStorage").Remotes:FindFirstChild(Value)
+	end	  
+})
+
 OrionLib:MakeNotification({
 	Name = "!READ!",
 	Content = "CLICK 'Debug' FIRST BEFORE DOING ANYTHING! ",
 	Image = "rbxassetid://4483345998",
 	Time = 10
 })
+
