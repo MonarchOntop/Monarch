@@ -136,7 +136,7 @@ LimitedSniper:AddToggle({
 			    if state then
 	        
 	while task.wait(3) and state do
-    pcall(function()
+
     local look = Item
 local sex = Purchaseltem
 for i,v in pairs(catalog:InvokeServer()) do
@@ -153,7 +153,7 @@ if string.find(namee, look)  then
 end
 end
 end
-end)
+
 end
 	        
 	    end
@@ -317,3 +317,33 @@ end
 game:GetService("Players").PlayerAdded:Connect(function(plr)
 loadStalk(plr)
 end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
