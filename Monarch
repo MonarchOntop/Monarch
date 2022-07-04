@@ -52,6 +52,7 @@ end
 local Signals = {} do
     function Signals.onAdminJoin(admin)
         MainData.Admins.AdminInGame = true
+        print("a")
     end
 end
 
@@ -81,10 +82,10 @@ end)
 
 local Mercury = loadstring(game:HttpGet("https://raw.githubusercontent.com/deeeity/mercury-lib/master/src.lua"))()
 local GUI = Mercury:Create{
-    Name = "Monarch",
+    Name = "Demeter | Trade Simulator",
     Size = UDim2.fromOffset(600, 400),
     Theme = Mercury.Themes.Legacy,
-    Link = "https://Monarch/MonarchOnTop"
+    Link = "https://www.Monarch/MonarchOnTop"
 }
 
 GUI:Prompt{
@@ -153,7 +154,7 @@ local SniperTab = GUI:Tab{
 local SafeMode = SniperTab:Toggle{
     Name = "Safe Mode",
     StartingState = false,
-    Description = "Toggles delay",
+    Description = "Adds a delay",
     Callback = function(state)
         MainData.SafeMode = state
     end
@@ -166,37 +167,39 @@ SniperVals["Discount"] = 0
 SniperVals["RefreshDelay"] = 2
 
 local SniperMaxNew = SniperTab:Slider{
-    Name = "New item budget",
+    Name = "Allowance per new item",
     Default = 0,
     Min = 0,
     Max = 500000,
-    Description = nil,
+    Description = "Sets the maximum amount of balance allowed to be spent on new items.",
     Callback = function(state)
         SniperVals["MaxNew"] = state
     end
 }
 
 local SniperMax = SniperTab:Slider{
-    Name = "Limited item budget",
+    Name = "Allowance per item",
     Default = 0,
     Min = 0,
     Max = 500000,
-    Description = nil,
+    Description = "Sets the maximum amount of balance allowed to be spent on items.",
     Callback = function(state)
         SniperVals["Max"] = state
     end
 }
 
 local SniperDiscount = SniperTab:Slider{
-    Name = "Discount",
+    Name = "Discount %",
     Default = 0,
     Min = 0,
-    Max = 99,
+    Max = 100,
     Description = nil,
     Callback = function(state)
         SniperVals["Discount"] = state
     end
 }
+
+
 
 local RefreshDelay = SniperTab:Slider{
     Name = "Item refresh delay",
@@ -211,14 +214,36 @@ local RefreshDelay = SniperTab:Slider{
 
 local SniperToggled = false
 local SniperRunning = SniperTab:Toggle{
-    Name = "Start sniper",
+    Name = "Toggle Sniper",
     StartingState = false,
-    Description = nil,
+    Description = "Toggles sniper.",
     Callback = function(state)
         SniperToggled = state
     end
 }
 
+local DebugTab = GUI:Tab{
+    Name = "Debug",
+    Icon = "rbxassetid://10055529778"
+}
+function getPercent(p, x)
+    return 100*(p/x)
+end
+local PrintItems = DebugTab:Button{
+    Name = "Print ItemInfo",
+    Description = "Gets ItemInfo",
+    Callback = function()
+        for i,v in pairs(api:RequestCatalog()) do
+            print(api:GetData(v, "name"), api:GetData(v, "RAP"))
+        end
+    end
+}
+
+
+
+-- [[ End of Import UI Library ]] --
+
+-- [[ Main Loop ]] --
 
 while true do
     if MainData.SafeMode then
@@ -232,12 +257,12 @@ while true do
             if api:GetData(v, "status") == "new" then
                 if v.price <= SniperVals["MaxNew"] then
                     api:PurchaseItem(api:GetData(v, "name"))
-                    print("Fetching info: " .. api:GetData(v, "name"))
+                    print("Attempting to purchase " .. api:GetData(v, "name"))
                 end
             else
                 if v.price <= SniperVals["Max"] and math.round(getPercent(v.price, v.RAP)) <= SniperVals["Discount"] then
                     api:PurchaseItemListing(api:GetData(v, "name"))
-                    print("Fetching info: " .. api:GetData(v, "name") .. " at a "..math.round(getPercent(v.price, v.RAP)).."% discount.")
+                    print("Attempting to purchase " .. api:GetData(v, "name") .. " at a "..math.round(getPercent(v.price, v.RAP)).."% discount.")
                 end
             end
         end
