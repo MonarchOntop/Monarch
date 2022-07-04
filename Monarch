@@ -205,7 +205,7 @@ local RefreshDelay = SniperTab:Slider{
     Max = 100,
     Description = "Must enable safe mode for this feature.",
     Callback = function(state)
-        SniperVals["RefreshDelay"] = state/10
+        SniperVals["RefreshDelay"] = state
     end
 }
 
