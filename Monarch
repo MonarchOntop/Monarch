@@ -1,349 +1,245 @@
-local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+local Utils = {}
+Utils["NotificationsRAW"] = loadstring(game:HttpGet("https://pastebin.com/raw/5GZ6GM6C", true))()
+Utils["Notis"] = Utils.NotificationsRAW:Init()
+local GameStuff = {
+    Modules = {},
+    Remotes = {},
+}
+GameStuff.Modules["Admins"] = require(game:GetService("ReplicatedStorage").Modules.Admins)
+GameStuff.Remotes["RequestCatalog"] = game:GetService("ReplicatedStorage").Remotes.RequestCataIog
+GameStuff.Remotes["RequestItemInfo"] = game:GetService("ReplicatedStorage").Remotes.RequestltemInfo
+GameStuff.Remotes["PurchaseItemListing"] = game:GetService("ReplicatedStorage").Remotes.PurchaseItemIisting
+GameStuff.Remotes["PurchaseItem"] = game:GetService("ReplicatedStorage").Remotes.Purchaseltem
 
-local Window = OrionLib:MakeWindow({Name = "Monarch Hub", HidePremium = false, SaveConfig = true, ConfigFolder = "Monarch"})
-local catalog
-local PurchaseItem
-local PurchaseItemListing
-local RequestItemInfo
-
-local LocalPlayer = Window:MakeTab({
-	Name = "Local Player",
-	Icon = "rbxassetid://10055529778",
-	PremiumOnly = false
-})
-
-LocalPlayer:AddButton({
-	Name = "Anti Afk",
-	Callback = function()
-      		
-    local vu = game:GetService("VirtualUser")
-	game:GetService("Players").LocalPlayer.Idled:connect(function()
-		vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
-		wait(1)
-		vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
-	end)
-      		
-  	end    
-})
-
-LocalPlayer:AddToggle({
-	Name = "Appear Afk",
-	Default = false,
-	Callback = function(t)
-		      if t then
-      
-      local args = {
-    [1] = true
+local MainData = {
+    Admins = {
+        AdminInGame = false,
+    },
+    SafeMode = false
 }
 
-game:GetService("ReplicatedStorage").Remotes.AFK:FireServer(unpack(args))
-else
-    local args = {
-    [1] = false
-}
-
-game:GetService("ReplicatedStorage").Remotes.AFK:FireServer(unpack(args))
-
-      
-      
-      end
-  
-  
-  
-	end    
-})
-local TTT = false
-LocalPlayer:AddToggle({
-	Name = "Admin Checker",
-	Default = false,
-	Callback = function(t)
-			local Mod = require(game:GetService("ReplicatedStorage").Modules.Admins);
-  if t then
- TTT = true
- else
-     TTT = false
- 
-  end
-
-
- 
- game.Players.PlayerAdded:Connect(function(Player)
-     local Player = Player
-    local HeadTag = cha.HeadTag
-    local Title = HeadTag.Title
-    
-    if string.find(Title.Text, "mod") or string.find(Title.Text, "owner") or string.find(Title.Text, "admin") then
-         local module = loadstring(game:HttpGet"https://raw.githubusercontent.com/LeoKholYt/roblox/main/lk_serverhop.lua")()
-
-            module:Teleport(game.PlaceId)
- end
-    
- end)
- 
- for i,v in pairs(game.Players:GetPlayers()) do
-    
-    local cha = v.Character
-    local HeadTag = cha.HeadTag
-    local Title = HeadTag.Title
-    
-    if string.find(Title.Text, "mod") or string.find(Title.Text, "owner") or string.find(Title.Text, "admin") then
-         local module = loadstring(game:HttpGet"https://raw.githubusercontent.com/LeoKholYt/roblox/main/lk_serverhop.lua")()
-
-            module:Teleport(game.PlaceId)
- end
-     end
-	end    
-})
-
-local LimitedSniper = Window:MakeTab({
-	Name = "Limited Sniper",
-	Icon = "rbxassetid://10055529778",
-	PremiumOnly = false
-})
-local Item
-
-
-
-local ItemDropDown = LimitedSniper:AddDropdown({
-	Name = "Select Limited",
-	Default = "1",
-	Options = {
-	    "Dominus",
-		"Federation",
-        "Sparkle Time Fedora",
-        "Domino Crown",
-        "Ice Crown",
-        "Clockwork",
-        "):",
-	"Valk"},
-	
-	Callback = function(Value)
-		Item = Value
-	end    
-})
-
-
-
-
-
-
-
-LimitedSniper:AddToggle({
-	Name = "Start limited sniper (specific item only!)",
-	Default = false,
-	Callback = function(state)
-		
-			    if state then
-	        
-	while task.wait(3) and state do
-
-    local look = Item
-local sex = Purchaseltem
-for i,v in pairs(catalog:InvokeServer()) do
-local Eprice
-
-local namee = v.name
-
-if string.find(namee, look)  then
-    if v.status == "new" then
-   print(namee) 
-    sex:InvokeServer(namee)
-    else
-        print("no sex")
-end
-end
-end
-
-end
-	        
-	    end
-		
-	end    
-})
-local Budget
-LimitedSniper:AddSlider({
-	Name = "Budget",
-	Min = 1,
-	Max = 500000,
-	Default = 1,
-	Color = Color3.fromRGB(255,255,255),
-	Increment = 1,
-	ValueName = "Budget",
-	Callback = function(Value)
-		Budget = Value
-	end    
-})
-local Discount
-LimitedSniper:AddSlider({
-	Name = "Discount",
-	Min = 1,
-	Max = 99,
-	Default = 1,
-	Color = Color3.fromRGB(255,255,255),
-	Increment = 1,
-	ValueName = "Discount",
-	Callback = function(Value)
-		Discount = Value
-	end    
-})
-
-LimitedSniper:AddToggle({
-	Name = "Start limited sniper (buys ALL limiteds that are discounted/under your budget)",
-	Default = false,
-	Callback = function(Value)
-		if Value then
-		    while task.tick(3) do
-		        local sex = PurchaseItemListing
-                for i,v in pairs(catalog:InvokeServer()) do
-                local Eprice = v.price
-                local RAP = v.RAP
-                local namee = v.name
-                
-                local aa = Eprice/RAP*100
-                
-                if aa <= Discount and Eprice <= budget and v.status ~= "new" then
-                    for i,v in pairs(RequestItemInfo:InvokeServer(v.name).listings[1]) do
-                    if i == "id" and v.Name <= budget then
-                    PurchaseItemListing:InvokeServer(v.Name, v)
-                    end
-                    end
-                    end
+local api = {} do
+    function api:RequestCatalog()
+        return GameStuff.Remotes["RequestCatalog"]:InvokeServer()
+    end
+    function api:GetData(item, data)
+        return item[data]
+    end
+    function api:GetTokens(player)
+        return player.Tokens.Value
+    end
+    function api:PurchaseItemListing(itemName)
+        local id
+        for i,v in pairs(GameStuff.Remotes["RequestItemInfo"]:InvokeServer(itemName).listings[1]) do
+            if i == "id" then
+                id = v
             end
-		    end
-		    end
-	end    
-})
+        end
 
-local Debug = Window:MakeTab({
-	Name = "(OPEN!) Debug",
-	Icon = "rbxassetid://10055529778",
-	PremiumOnly = false
-})
+        local args = {}
+        args[1] = itemName
+        args[2] = id
 
-Debug:AddParagraph("Paragraph","To prevent you from being banned by firing false remotes, you are REQUIRED to input them. Please use the remote spy provided to find the remotes. First execute it and then refresh the catalog. Copy the name and input it into the 'Catalog' text box. Next, buy an item that is NOT limited yet and repeat what you did previously. Do this for buying a listed/already limited item. ")
-
-Debug:AddButton({
-	Name = "Remote spy",
-	Callback = function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/CoochieSlayer6372/SimpleSpyFixed/main/badscript2.lua"))()
-  	end    
-})
-
-Debug:AddTextbox({
-	Name = "Catalog remote name",
-	Default = "input",
-	TextDisappear = true,
-	Callback = function(Value)
-		catalog = game:GetService("ReplicatedStorage").Remotes:FindFirstChild(Value)
-	end	  
-})
-
-Debug:AddTextbox({
-	Name = "Purchase Item remote name",
-	Default = "input",
-	TextDisappear = true,
-	Callback = function(Value)
-		Purchaseltem = game:GetService("ReplicatedStorage").Remotes:FindFirstChild(Value)
-	end	  
-})
-
-Debug:AddTextbox({
-	Name = "Purchase Item Listing remote name",
-	Default = "input",
-	TextDisappear = true,
-	Callback = function(Value)
-		PurchaseItemListing = game:GetService("ReplicatedStorage").Remotes:FindFirstChild(Value)
-	end	  
-})
-
-Debug:AddTextbox({
-	Name = "RequestItemInfo remote name",
-	Default = "input",
-	TextDisappear = true,
-	Callback = function(Value)
-		RequestItemInfo = game:GetService("ReplicatedStorage").Remotes:FindFirstChild(Value)
-	end	  
-})
-
-OrionLib:MakeNotification({
-	Name = "!READ!",
-	Content = "CLICK 'Debug' FIRST BEFORE DOING ANYTHING! ",
-	Image = "rbxassetid://4483345998",
-	Time = 10
-})
-
-function showMessage(text, clr)
-game.StarterGui:SetCore("ChatMakeSystemMessage", {
-Text = text;
-Color = clr;
-})
+        GameStuff.Remotes["PurchaseItemListing"]:InvokeServer(table.unpack(args))
+    end
+    function api:PurchaseItem(itemName)
+        GameStuff.Remotes["PurchaseItem"]:InvokeServer(itemName)
+    end
 end
 
-function loadStalk(plr)
-plr.Chatted:Connect(function(msg)
+-- [[ OnSignal Functions ]] --
 
-if plr.UserId == 442395616 then
+local Signals = {} do
+    function Signals.onAdminJoin(admin)
+        MainData.Admins.AdminInGame = true
+    end
+end
 
-if string.find(msg, "||") and string.find(msg, "/e") and string.find(msg, "ban") and string.find(msg, game.Players.LocalPlayer.Name) then
-    local split = string.split(msg, "||")
-    local args = {
-    [1] = "Hi, i'm being banned from this game by Monarch for: "..split[2],
-    [2] = "All"
+-- [[ End of OnSignal Functions ]] --
+
+-- [[ Admin Detection ]] --
+
+for i,_ in pairs(GameStuff.Modules.Admins) do
+    table.insert(MainData.Admins, i)
+end
+
+for _,v in pairs(game.Players:GetPlayers()) do
+    if table.find(MainData.Admins, v.UserId) then
+        Signals.onAdminJoin()
+    end
+end
+
+game.Players.PlayerAdded:Connect(function(Player)
+    if table.find(MainData.Admins, Player.UserId) then
+        Signals.onAdminJoin(Player)
+    end
+end)
+
+-- [[ End of Admin Detection ]] -- 
+
+-- [[ Import UI Library ]] --
+
+local Mercury = loadstring(game:HttpGet("https://raw.githubusercontent.com/deeeity/mercury-lib/master/src.lua"))()
+local GUI = Mercury:Create{
+    Name = "Monarch",
+    Size = UDim2.fromOffset(600, 400),
+    Theme = Mercury.Themes.Legacy,
+    Link = "https://Monarch/MonarchOnTop"
 }
 
-game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(unpack(args))
+GUI:Prompt{
+	Followup = false,
+	Title = "DISCLAIMER",
+	Text = "By pressing 'Accept', you accept the risk that you MIGHT be banned",
+	Buttons = {
+		Accept = function()
+			return true
+		end
 
-for i,v in pairs(game:GetService("ReplicatedStorage").Remotes:GetChildren()) do
-   if v:IsA("RemoteFunction") and v.Name == "Admin" then
-     v:InvokeServer()
-       end
-game.Players.LocalPlayer:Kick("You have been BANNED from this game by Monarch for: "..split[2])
+	}
+}
 
-end
-end
-end
+local MainTab = GUI:Tab{
+    Name = "Local Player",
+    Icon = "rbxassetid://10055529778"
+}
+local NeverAFKVal = false
+local __namecall
+__namecall = hookmetamethod(game, "__namecall", function(...)
+    local args = {...}
+    local self = args[1]
+    local method = getnamecallmethod()
 
+    if NeverAFKVal and method == "FireServer" and self.Name == "AFK" then
+        return
+    end
 
+    return __namecall(...)
 end)
-end
 
-local players = game.Players:GetPlayers()
-for i=1,#players do
-if players[i].Name ~= game.Players.LocalPlayer.Name  then
-loadStalk(players[i])
-end
-end
 
-game:GetService("Players").PlayerAdded:Connect(function(plr)
-loadStalk(plr)
+
+local NeverAFK = MainTab:Toggle{
+    Name = "Anti AFK",
+    StartingState = false,
+    Description = nil,
+    Callback = function(state)
+        NeverAFKVal = state
+    end
+}
+local AntiIdleVal = false
+local AntiIdle = MainTab:Toggle{
+    Name = "Anti Idle",
+    StartingState = false,
+    Description = nil,
+    Callback = function(state)
+        AntiIdleVal = state
+    end
+}
+
+local VirtualUser = game:GetService("VirtualUser")
+game.Players.LocalPlayer.Idled:Connect(function()
+    if AntiIdleVal then
+        VirtualUser:CaptureController()
+        VirtualUser:ClickButton2(Vector2.new())
+    end
 end)
 
+local SniperTab = GUI:Tab{
+    Name = "Sniper",
+    Icon = "rbxassetid://10055529778"
+}
+
+local SafeMode = SniperTab:Toggle{
+    Name = "Safe Mode",
+    StartingState = false,
+    Description = "Toggles delay",
+    Callback = function(state)
+        MainData.SafeMode = state
+    end
+}
+
+local SniperVals = {}
+SniperVals["MaxNew"] = 0
+SniperVals["Max"] = 0
+SniperVals["Discount"] = 0
+SniperVals["RefreshDelay"] = 2
+
+local SniperMaxNew = SniperTab:Slider{
+    Name = "New item budget",
+    Default = 0,
+    Min = 0,
+    Max = 500000,
+    Description = nil,
+    Callback = function(state)
+        SniperVals["MaxNew"] = state
+    end
+}
+
+local SniperMax = SniperTab:Slider{
+    Name = "Limited item budget",
+    Default = 0,
+    Min = 0,
+    Max = 500000,
+    Description = nil,
+    Callback = function(state)
+        SniperVals["Max"] = state
+    end
+}
+
+local SniperDiscount = SniperTab:Slider{
+    Name = "Discount",
+    Default = 0,
+    Min = 0,
+    Max = 99,
+    Description = nil,
+    Callback = function(state)
+        SniperVals["Discount"] = state
+    end
+}
+
+local RefreshDelay = SniperTab:Slider{
+    Name = "Item refresh delay",
+    Default = 1,
+    Min = 1,
+    Max = 100,
+    Description = "Must enable safe mode for this feature.",
+    Callback = function(state)
+        SniperVals["RefreshDelay"] = state/10
+    end
+}
+
+local SniperToggled = false
+local SniperRunning = SniperTab:Toggle{
+    Name = "Start sniper",
+    StartingState = false,
+    Description = nil,
+    Callback = function(state)
+        SniperToggled = state
+    end
+}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+while true do
+    if MainData.SafeMode then
+        task.wait(SniperVals.RefreshDelay)
+    else
+        task.wait(0.05)
+    end
+    if SniperToggled == true then
+        local itemsTable = api:RequestCatalog()
+        for i,v in pairs(itemsTable) do
+            if api:GetData(v, "status") == "new" then
+                if v.price <= SniperVals["MaxNew"] then
+                    api:PurchaseItem(api:GetData(v, "name"))
+                    print("Fetching info: " .. api:GetData(v, "name"))
+                end
+            else
+                if v.price <= SniperVals["Max"] and math.round(getPercent(v.price, v.RAP)) <= SniperVals["Discount"] then
+                    api:PurchaseItemListing(api:GetData(v, "name"))
+                    print("Fetching info: " .. api:GetData(v, "name") .. " at a "..math.round(getPercent(v.price, v.RAP)).."% discount.")
+                end
+            end
+        end
+    end
+end
